@@ -1,0 +1,3 @@
+mit_search_homepage:
+    path:     /
+    defaults: { _controller: MITSearchBundle:Default:index }
