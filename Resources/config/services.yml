@@ -1,0 +1,13 @@
+services:
+    mit_search.dotrine_engine:
+        class: MIT\Bundle\SearchBundle\Engine\Driver\DoctrineEngine
+        arguments: ["@doctrine.orm.default_entity_manager"]
+
+    mit_search.engine_manager:
+        class: MIT\Bundle\SearchBundle\Engine\EngineManager
+        arguments: ["@service_container"]
+        public: false
+
+    mit_search.search_manager:
+        class: MIT\Bundle\SearchBundle\Manager\SearchManager
+        arguments: ["@mit_search.engine_manager"]
