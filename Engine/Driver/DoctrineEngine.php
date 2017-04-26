@@ -13,6 +13,7 @@ namespace MIT\Bundle\SearchBundle\Engine\Driver;
 
 use Doctrine\ORM\EntityManagerInterface;
 use MIT\Bundle\SearchBundle\Contracts\EngineInterface;
+use Symfony\Component\VarDumper\VarDumper;
 
 class DoctrineEngine implements EngineInterface
 {
@@ -42,6 +43,7 @@ class DoctrineEngine implements EngineInterface
     public function search($query, $context=null)
     {
         $result = array();
+
         foreach(array_keys($query) as $type){
             $result[$type]  = $this->searchInSearchable($this->getClassName($type), $query[$type]);
         }
@@ -60,23 +62,38 @@ class DoctrineEngine implements EngineInterface
 
     public function insert($searchable)
     {
-        // TODO: Implement insert() method.
+    }
+
+    /**
+     * @param $searchableClass
+     * @param array $criteria
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function buildQuery($searchableClass, array $criteria)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('sb')
+            ->from($searchableClass, 'sb');
+
+        foreach (array_keys($criteria) as $field){
+            $qb->andWhere($qb->expr()->like('sb.'.$field, '\'%'.$criteria[$field].'%\''));
+        }
+        return $qb;
     }
 
     private function getClassName($type)
     {
-        $index=$this->em->getRepository('MITSearchBundle:DoctrineEngineIndex')->findOneBy(['slug' => $type]);
-
-        return $index
-            ? $this->em->getClassMetadata($index->getClassName())->getName()
-            : $index
+        return $type
+            ? $this->em->getClassMetadata($type)->getName()
+            : null
         ;
     }
 
     private function searchInSearchable($searchableClass, array $criteria)
     {
-        $rep = $this->em->getRepository($searchableClass);
+        if (empty($searchableClass)) return [];
+        $qb = $this->buildQuery($searchableClass, $criteria);
 
-        return $rep->findBy($criteria);
+        return $qb->getQuery()->getResult();
     }
 }

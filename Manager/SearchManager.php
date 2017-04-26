@@ -13,6 +13,7 @@ namespace MIT\Bundle\SearchBundle\Manager;
 
 use MIT\Bundle\SearchBundle\Contracts\EngineInterface;
 use MIT\Bundle\SearchBundle\Contracts\SearchManagerInterface;
+use MIT\Bundle\SearchBundle\Engine\Driver\DoctrineEngine;
 use MIT\Bundle\SearchBundle\Engine\EngineManager;
 
 class SearchManager implements SearchManagerInterface
@@ -38,7 +39,7 @@ class SearchManager implements SearchManagerInterface
      */
     public function search($query, $context = null)
     {
-        // TODO: Implement search() method.
+        return $this->engine(DoctrineEngine::name)->search($query);
     }
 
     public function remove($searchable)
@@ -51,7 +52,7 @@ class SearchManager implements SearchManagerInterface
         // TODO: Implement update() method.
     }
 
-    public function insert($searchable)
+    public function insert($searchable, $engine = "doctrine_engine")
     {
         // TODO: Implement insert() method.
     }
@@ -62,5 +63,6 @@ class SearchManager implements SearchManagerInterface
      */
     public function engine($name)
     {
+        return $this->engineManager->engine($name);
     }
 }

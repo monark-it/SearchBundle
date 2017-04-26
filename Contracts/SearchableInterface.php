@@ -14,34 +14,7 @@ namespace MIT\Bundle\SearchBundle\Contracts;
 interface SearchableInterface
 {
     /**
-     * Search this object.
-     *
-     * @param $query
-     * @param null $context
-     * @param null $callback
-     * @return mixed
+     * @return bool
      */
-    public function search($query, $context=null, $callback = null);
-
-    /**
-     * Remove this from the registry.
-     *
-     * @return mixed
-     */
-    public function remove();
-
-    /**
-     * @return mixed
-     */
-    public function update();
-
-    /**
-     * @return mixed
-     */
-    public function insert();
-
-    /**
-     * @return mixed
-     */
-    public function toArray();
+    public function isSearchable();
 }

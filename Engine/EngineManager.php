@@ -37,6 +37,7 @@ class EngineManager implements ContainerAwareInterface
 
     protected function engines()
     {
+        // TODO: Register this engines in the dependency injection.
         return [
             'algolia'               => null,
             'elasticsearch'         => null,
