@@ -1,6 +1,6 @@
 {
     "name": "multiinfo/search-bundle",
-    "description": "MIT User Bundle",
+    "description": "MIT Search Bundle",
     "type": "Symfony Bundle",
     "license": "Proprietary",
     "authors": [
