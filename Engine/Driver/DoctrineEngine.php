@@ -50,19 +50,107 @@ class DoctrineEngine implements EngineInterface
         return $result;
     }
 
-    public function remove($searchable)
+///////
+
+      public function remove($query)
     {
-        // TODO: Implement remove() method.
+       // $cpt=0;
+        foreach(array_keys($query) as $type){
+
+            $this->deleteQuery($this->getClassName($type),$query[$type]);
+         }
+       // return !$cpt ? 1 : 0;
     }
 
-    public function update($searchable)
+
+    public function update($values)
     {
-        // TODO: Implement update() method.
+        foreach(array_keys($values) as $val){
+
+             $this->updateQuery($this->getClassName($val),$values[$val]);
+        }
     }
 
-    public function insert($searchable)
+
+    public function insert($query)
     {
+
+        foreach (array_keys($query) as $value)
+        {
+            $this->insertQuery($this->getClassName($value),$query[$value]);
+        }
+
     }
+
+    private function deleteQuery($searchableClass, $filtres)
+    {
+        //$res=0;
+        foreach ($filtres as $val)
+        {
+            $prop=array_keys($filtres)[0];
+            $qb = $this->em->createQueryBuilder();
+            $res= $qb->delete($searchableClass,'sb')
+                ->where("sb.$prop = :value")
+                ->setParameter('value',$val)
+                ->getQuery()
+                ->getResult();
+        }
+       // return !$res ? 1 : 0;
+    }
+
+
+    private function insertQuery($searchableClass,$values)
+    {
+        $obj=new $searchableClass();
+        $i=-1;
+        foreach ($values as $val)
+        {
+           $i++;
+           $prop="set".ucfirst(array_keys($values)[$i]);
+           $obj->$prop($val);
+        }
+
+        try{
+            $this->em->persist($obj);
+            $this->em->flush();
+            return "Record ajouter!";
+        }
+        catch (Exception $e){
+
+            return "Record non ajouter!";
+        }
+
+    }
+
+    private function updateQuery($searchableClass, $values)
+    {
+        if (array_key_exists('id', $values)) {
+
+            $i=-1;
+            foreach ($values as $val)
+            {
+                $i++;$cpt=0;
+                $prop=array_keys($values)[$i];
+
+                if($i==0)
+                {
+                    $obj= $this->em->getRepository($searchableClass)->findOneBy(["id"=>$val]);
+                }
+                if($prop!="id")
+                {
+                    $prop="set".ucfirst(array_keys($values)[$i]);
+                    $obj->$prop($val);
+                }
+            }
+
+            $this->em->persist($obj);
+            $this->em->flush();
+          //  return 1;
+        }
+        //return 0;
+    }
+
+    //////
 
     /**
      * @param $searchableClass
