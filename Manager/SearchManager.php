@@ -44,17 +44,17 @@ class SearchManager implements SearchManagerInterface
 
     public function remove($searchable)
     {
-        // TODO: Implement remove() method.
+        return $this->engine(DoctrineEngine::name)->remove($searchable);
     }
 
     public function update($searchable)
     {
-        // TODO: Implement update() method.
+        return $this->engine(DoctrineEngine::name)->update($searchable);
     }
 
-    public function insert($searchable, $engine = "doctrine_engine")
+    public function insert($searchable)
     {
-        // TODO: Implement insert() method.
+        return $this->engine(DoctrineEngine::name)->insert($searchable);
     }
 
     /**
